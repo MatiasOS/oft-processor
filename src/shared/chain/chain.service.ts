@@ -19,6 +19,7 @@ import {
 import { ContractsService } from '../contracts/contracts.service';
 import { SupportedChainId } from '../types/chainId.types';
 import { RpcUrls } from 'src/config/rpc.config';
+import { SupportedContractName } from '../types/contract.types';
 
 @Injectable()
 export class ChainService {
@@ -38,7 +39,7 @@ export class ChainService {
     deployArgs,
   }: {
     chainId: SupportedChainId;
-    contractName: string;
+    contractName: SupportedContractName;
     deployArgs: unknown[];
   }): Promise<string> {
     const { abi, bytecode } = this.contractsService.findOne(contractName);
@@ -120,7 +121,7 @@ export class ChainService {
   }: {
     address: `0x${string}`;
     chainId: SupportedChainId;
-    contractName: string;
+    contractName: SupportedContractName;
   }) {
     const { abi } = this.contractsService.findOne(contractName);
     const publicClient = this.getPublicClient(chainId);

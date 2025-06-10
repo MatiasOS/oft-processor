@@ -3,7 +3,6 @@ import { OftConfigProcessor } from './oftConfig.processor';
 import { OftDeployProcessor } from './oftDeploy.processor';
 
 @Module({
-  imports: [OftConfigProcessor, OftDeployProcessor],
-  exports: [OftConfigProcessor, OftDeployProcessor],
+  providers: [OftConfigProcessor, OftDeployProcessor],
 })
 export class ProcessorsModule {}
