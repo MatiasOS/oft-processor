@@ -2,16 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { AlTokeOFT } from './AlTokeOFT';
 import { MerkleDistributor } from './MerkleDistributor';
 import { Abi } from 'viem';
+import { SupportedContractName } from '../types/contract.types';
 
 export interface Contract {
-  contractName: string;
+  contractName: SupportedContractName;
   abi: Abi;
   bytecode: `0x${string}`;
 }
 
 @Injectable()
 export class ContractsService {
-  findOne(name: string): Contract {
+  findOne(name: SupportedContractName): Contract {
     const v = [AlTokeOFT, MerkleDistributor].find(
       ({ contractName }) => contractName === name,
     );
