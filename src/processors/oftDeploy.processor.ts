@@ -20,20 +20,39 @@ export class OftDeployProcessor extends WorkerHost {
   }
 
   async process(job: Job<any, any, string>): Promise<any> {
-    const { chainId, contractName, deployArgs, oftPeerId } =
-      job.data as DeployDto;
+    try {
+      const {
+        chainId,
+        contractName,
+        name,
+        symbol,
+        endpointV2Address,
+        oftPeerId,
+        initialSupply,
+      } = job.data as DeployDto;
 
-    const txHash = await this.chainService.deploy({
-      chainId,
-      contractName,
-      deployArgs,
-    });
+      const txHash = await this.chainService.deploy({
+        chainId,
+        contractName,
+        deployArgs: [
+          name,
+          symbol,
+          endpointV2Address,
+          this.chainService.getAccount().address,
+          this.chainService.getAccount().address,
+          '0x' + initialSupply,
+        ],
+      });
 
-    await this.peersRepository.update(
-      { id: oftPeerId },
-      { deployTxHash: txHash },
-    );
+      await this.peersRepository.update(
+        { id: oftPeerId },
+        { deployTxHash: txHash },
+      );
 
-    return {};
+      return {};
+    } catch (error) {
+      console.error('Error processing job:', error);
+      throw error;
+    }
   }
 }
