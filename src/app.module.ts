@@ -1,4 +1,4 @@
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import rpcConfig from './config/rpc.config';
@@ -16,11 +16,19 @@ import { OftPeer } from './entities/oftPeers.entity';
       isGlobal: true,
       envFilePath: ['.env'],
     }),
-    BullModule.forRoot({
-      connection: {
-        host: 'localhost',
-        port: 6379,
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        const connection = {
+          host: configService.get('QUEUE_HOST') as string,
+          port: configService.get('QUEUE_PORT') as number,
+        };
+        console.log(connection);
+        return {
+          connection,
+        };
       },
+      inject: [ConfigService],
     }),
     BullModule.registerQueue(
       {
